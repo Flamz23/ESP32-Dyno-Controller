@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP-32 Dyno Controller</title>
     <script defer type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script defer src="/static/main.js"></script>
+    <script defer src="./assets/main.js"></script>
 </head>
 <body>
     <p>ESP-32 Serial Test</p>
-    <div id="rpm-chart" class="w-full h-80"></div>
+    <div id="main-graph"></div>
+    <button onclick="connectDevice()">Connect</button>
+    <button onclick="disconnectDevice()">Disconnect</button>
 </body>
 </html>
