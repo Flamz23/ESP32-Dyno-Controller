@@ -1,0 +1,80 @@
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280>
+
+//task intervals
+#define RPM_INTERVAL 8 // 8 ms 
+#define INDUCTIVE_INTERVAL 4 // 4 ms
+#define THP_INTERVAL 10 // 10 ms
+
+unsigned long rpmTask = 0;
+unsigned long inductiveTask = 0;
+unsigned long thpTask = 0;
+
+//create an object
+Adafruit_BME280 bme;
+
+void setup() 
+{
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+
+  if(!bme.begin(0x76))
+  {
+    Serial.println("Could not find valid pin, try rewiring");
+    while(1);
+  }
+}
+
+void loop() 
+{
+  // put your main code here, to run repeatedly:
+  unsigned long currentMillis = millis();
+
+  if(currentMillis - rpmTask >= RPM_INTERVAL)
+  {
+    readRPM();
+    rpmTask = currentMillis;
+  }
+
+  if(currentMillis - inductiveTask >= INDUCTIVE_INTERVAL)
+  {
+    readInductive();
+    inductiveTask = currentMillis;
+  }
+
+  if(currentMillis - thpTask >= THP_INTERVAL)
+  {
+    readTHP();
+    rpmTask = currentMillis;
+  }
+
+}
+
+void readRPM()
+{
+
+}
+
+void readInductive()
+{
+
+}
+
+void readTHP()
+{
+  float temperature = bme.readTemperature();
+  float pressure = bme.readPressure() / 100.0F; // Pa to hPa conversion
+  float humidity = bme.readHumidity();
+
+  // Print the sensor data to the serial monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" °C, Pressure: ");
+  Serial.print(pressure);
+  Serial.print(" hPa, Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  delay(1000);
+}
