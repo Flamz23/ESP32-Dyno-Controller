@@ -2,7 +2,7 @@
 if ("serial" in navigator) {
     console.log("The web serial API is supported");
 } else {
-    console.log("The web serial API is not supported in this context or browser");
+    alert("The web serial API is not supported in this context or browser");
 }
 
 // alert user when device is disconnected
@@ -38,12 +38,39 @@ async function disconnectDevice() {
 
 async function readSerial() {
     try {
-        
+        // Create a text decoder to handle received data
+        const decoder = new TextDecoderStream('utf-8');
+
+        // Create a readable stream from the serial port
+        const readableStreamClosed = port.readable.pipeTo(decoder.writable);
+
+        // Get a reference to the readable stream
+        const readableStream = decoder.readable;
+
+        // Start reading data from the stream
+        const reader = readableStream.getReader();
+
+        // Continuously read data from the serial port
+        while (true) {
+            const { value, done } = await reader.read();
+  
+            if (done) {
+              console.log('Reader has been closed');
+              break;
+            }
+  
+            // Display the received data
+            //document.getElementById('output').innerText += value + '\n';
+            console.log(value + '\n')
+          }
     } catch (error) {
         
     }
 }
 
+function parseMessage() {
+    
+}
 
 
 
