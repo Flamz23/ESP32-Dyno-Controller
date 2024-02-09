@@ -15,12 +15,17 @@
     <br>
     <br>
     <button onclick="openConfig()">Config</button>
-    <button onclick="importTrace()">Import Trace</button>
     <button onclick="saveConfig()">Save</button>
+    <br>
+    <br>
+    <input type="file" id="csv-file-picker" accept=".csv">
+    <button onclick="importTraceFile()">Import Trace File</button>
     <br>
     <br>
     <label for="rpm-threshold">RPM Threshold</label>
     <input id="rpm-threshold" type="text" value="2000">
+    <br>
+    <br>
     <label for="temp-threshold">Engine Temp. Threshold C</label>
     <input id="temp-threshold" type="text" value="90">
 </body>
