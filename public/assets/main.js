@@ -1,6 +1,11 @@
 let port;
 let portInfo;
 let parsedTraceFile;
+const csvHeaderRow = 14; // row to look for headers
+const rpmColumnHeader = "\"RPM\"\r" // word to look for indicating header row
+const rpmStartRow = 15;
+const rpmDataSize = 20; // number of values to read
+let rpmData = []; // array to hold the parsed rpm data
 const baud = 57600;
 
 /***********************************************************************************************************/
@@ -118,13 +123,26 @@ function parseTraceFile(data) {
   // Split CSV content into rows
   var rows = data.split("\n");
 
-  // Create an array to hold the parsed data
-  var data = [];
+   // Check if there are rows in the CSV content
+  if (rows.length > 0) {
 
-  // Loop through rows and split each row into columns
-  for (var i = 0; i < rows.length; i++) {
-    var columns = rows[i].split(",");
-    data.push(columns);
+    // Extract column headers from the first row
+    var headers = rows[csvHeaderRow].split(",");
+
+    // Find the index of the "rpm" column
+    var rpmIndex = headers.indexOf(rpmColumnHeader);
+
+    console.log(rpmIndex);
+
+    // Loop through rows and split each row into columns
+    for (var i = rpmStartRow; i < (rpmStartRow + rpmDataSize); i++) {
+      var columns = rows[i].split(",");
+      rpmData.push(columns[rpmIndex]);
+      
+      console.log(columns[rpmIndex]); // print rpm values to console
+    }
+  } else {
+    console.error("No rows found in the CSV file.");
   }
 
   return data;
@@ -134,39 +152,39 @@ function parseTraceFile(data) {
 
 /***********************************************************************************************************/
 
-// google.charts.load('current', { 'packages': ['corechart'] }); // Load the Visualization API
-// google.charts.setOnLoadCallback(drawChart); // API load callback
+google.charts.load('current', { 'packages': ['corechart'] }); // Load the Visualization API
+google.charts.setOnLoadCallback(drawChart); // API load callback
 
-// function UpdateData(value, data, chart, options) {
-//     var today = new Date();
-//     data.addRow([`${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`, value]); // Add to the data
-//     chart.draw(data, options); // update chart
+function UpdateData(value, data, chart, options) {
+    var today = new Date();
+    data.addRow([`${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`, value]); // Add to the data
+    chart.draw(data, options); // update chart
 
-//     // Stop adding data after 10 points
-//     var numRows = data.getNumberOfRows();
-//     if (numRows > 10) {
-//         data.removeRow(0);
-//     }
-// }
+    // Stop adding data after 10 points
+    var numRows = data.getNumberOfRows();
+    if (numRows > 10) {
+        data.removeRow(0);
+    }
+}
 
-// function drawChart() {
-//     // Create an empty data table with one column
-//     var rpmTraceData = new google.visualization.DataTable();
-//     rpmTraceData.addColumn('string', 'Time');
-//     rpmTraceData.addColumn('number', 'RPM');
+function drawChart() {
+    // Create an empty data table with one column
+    var rpmTraceData = new google.visualization.DataTable();
+    rpmTraceData.addColumn('string', 'Time');
+    rpmTraceData.addColumn('number', 'RPM');
 
-//     // Create a new line chart
-//     var mainGraph = new google.visualization.LineChart(document.getElementById('main-graph'));
+    // Create a new line chart
+    var mainGraph = new google.visualization.LineChart(document.getElementById('main-graph'));
 
-//     // Set chart options
-//     var options = {
-//         title: 'Dynamic Chart',
-//         curveType: 'function',
-//         legend: { position: 'bottom' }
-//     };
+    // Set chart options
+    var options = {
+        title: 'Dynamic Chart',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+    };
 
-//     setInterval(function () {
-//         var value = Math.floor(Math.random() * 100); // Generate data point
-//         UpdateData(value, )
-//     }, 1000)
-// }
+    setInterval(function () {
+        var value = Math.floor(Math.random() * 100); // Generate data point
+        UpdateData(value, rpmTraceData, mainGraph, options)
+    }, 1000)
+}
