@@ -5,23 +5,25 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
+// Pin assignments
+#define RPM_SENSOR_PIN 4
+#define SERVO_PIN 7
+
 /****************** BME280 ********************/
 Adafruit_BME280 bme; // I2C
 unsigned long delayTime;
 /****************** BME280 ********************/
 
 /****************** RPM Sensor ********************/
-volatile unsigned long previousMillis = 0;
-volatile unsigned long pulseDuration = 0;
 float pulsePeriodMs = 0;
 float pulseRPM = 0;
+volatile unsigned long previousMillis = 0;
+volatile unsigned long pulseDuration = 0;
 volatile boolean fallingEdgeDetected = false;
-const int interruptPin = 2;
 /****************** RPM Sensor ********************/
 
-
-void printValues()
-{
+// Print values to serial monitor
+void printValues() {
   Serial.print("temp:");
   Serial.print(bme.readTemperature());
   Serial.print("*C, ");
@@ -44,6 +46,7 @@ void printValues()
   Serial.println(pulseRPM);
 }
 
+// Update period and RPM variables
 void fallInterrupt() {
   unsigned long currentMillis = micros(); // Use micros() for microsecond precision
   if (previousMillis != 0) {
@@ -54,7 +57,6 @@ void fallInterrupt() {
   pulsePeriodMs = pulseDuration / 1000.0; // Convert microseconds to milliseconds
   pulseRPM = (1.0 /((pulsePeriodMs / 1000.0) * 8.0)) * 60.0; // 8div; convert to seconds, freq then per minutes
 }
-
 
 
 void setup()
@@ -75,10 +77,9 @@ void setup()
   /****************** BME280 ********************/
 
   /****************** RPM Sensor ********************/
-  pinMode(interruptPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(interruptPin), fallInterrupt, FALLING);
+  pinMode(RPM_SENSOR_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_PIN), fallInterrupt, FALLING);
   /****************** RPM Sensor ********************/
-
 }
 
 void loop()
