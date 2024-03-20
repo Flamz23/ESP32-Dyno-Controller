@@ -25,16 +25,12 @@ volatile boolean fallingEdgeDetected = false;
 // Print values to serial monitor
 void printValues() {
   Serial.print("temp:");
-  Serial.print(bme.readTemperature());
-  Serial.print("*C, ");
-
+  Serial.print(bme.readTemperature()); // *C
   Serial.print("pressure:");
-  Serial.print(bme.readPressure() / 100.0F);
-  Serial.print("hPa, ");
+  Serial.print(bme.readPressure() / 100.0F); // hPa
 
   Serial.print("humidity:");
-  Serial.print(bme.readHumidity());
-  Serial.print("%");
+  Serial.print(bme.readHumidity()); // %
 
   Serial.print(", PDuration:");
   Serial.print(pulseDuration);
@@ -73,7 +69,7 @@ void setup()
       ;
   }
   Serial.println("BME Init Success");
-  delayTime = 40;
+  delayTime = 20;
   /****************** BME280 ********************/
 
   /****************** RPM Sensor ********************/
