@@ -19,6 +19,14 @@ var RPM_Chart_options = {
   legend: { position: "bottom" },
 };
 
+// Set guage chart options
+var options = {
+  width: 400, height: 120,
+  redFrom: 90, redTo: 100,
+  yellowFrom:75, yellowTo: 90,
+  minorTicks: 5
+};
+
 let debug = false;
 let recording = false;
 
@@ -214,14 +222,13 @@ function parseTraceFile(data) {
 }
 
 /***********************************************************************************************************/
-/*                                              DRAW                                                 */
+/*                                              DRAW                                                       */
 /***********************************************************************************************************/
-// See https://developers.google.com/chart/interactive/docs/gallery/linechart#classic
+// See https://developers.google.com/chart
 
 // #TODO: Chart crosshair
 // #TODO: Chart scaling\zooming
 // #TODO: Chart lines
-// #TODO: Add a class to handle logging
 
 google.charts.load("current", { packages: ["corechart"] }); // Load the Visualization API
 

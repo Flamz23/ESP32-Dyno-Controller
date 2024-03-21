@@ -1,18 +1,5 @@
 #include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
 
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
-
-// Pin assignments
-#define RPM_SENSOR_PIN 4
-#define SERVO_PIN 7
-
-/****************** BME280 ********************/
-Adafruit_BME280 bme; // I2C
-unsigned long delayTime;
-/****************** BME280 ********************/
 
 /****************** RPM Sensor ********************/
 float pulsePeriodMs = 0;
