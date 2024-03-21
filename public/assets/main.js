@@ -20,6 +20,7 @@ var RPM_Chart_options = {
 };
 
 let debug = false;
+let recording = false;
 
 /***********************************************************************************************************/
 
@@ -117,7 +118,7 @@ async function readSerialMessage() {
           // Process the received line of data
           parseSerialMessage(line);
 
-          //console.log(line);
+          console.log(line);
         });
       }
     }
@@ -125,7 +126,26 @@ async function readSerialMessage() {
 }
 
 function parseSerialMessage(line) {
-  
+  // Object to hold parsed data
+  var parsedData = {};
+
+  // Parse the received data
+  const data = (line.toString()).trim();
+
+  switch (data[0]) {
+    case "0": // Used for debugging. Shows data from all devices and sensors
+      // Do something
+      break;
+    case "1": // Only real-time data (i.e data used during tests)
+      // Do something else
+      break;
+    case "2": // Reports
+        // Do something else
+        break;
+    default:
+      // Do nothing
+      break;
+  }
 }
 
 function sendSerialMessage() {}
