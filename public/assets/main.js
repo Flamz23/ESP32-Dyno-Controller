@@ -236,7 +236,7 @@ class googleChart {
     this.options = options;
   }
 
-  // Create a new chart instance
+  // Create a new line chart instance
   createLineChart(label, element) {
     // Create an empty data table with one column
     this.data = new google.visualization.DataTable();
@@ -251,7 +251,7 @@ class googleChart {
     this.element = element;
   }
 
-  // Update chart with new data from an array
+  // Update line chart with new data from an array
   updateLineChart(dataArray, startingTime, period) {
     var time = startingTime;
     for (var i = 0; i < dataArray.length; i++) {
@@ -261,14 +261,36 @@ class googleChart {
     this.chartObject.draw(this.data, this.options); // update chart
   }
 
+  // Update line chart with new data from a single point
   updateLineChartPoint(time, value) {
     this.data.addRow([time, value]);
     this.chartObject.draw(this.data, this.options); // update chart
   }
 
-  // Clear chart data
+  // Clear line chart data
   clearLineChart() {
     this.data.removeRows(0, this.data.getNumberOfRows());
+    this.chartObject.draw(this.data, this.options); // update chart
+  }
+
+  // Create a new guage chart instance
+  createGuageChart(label, element) {
+    // Create an empty data table with one column
+    this.data = google.visualization.arrayToDataTable([
+      ['Label', 'Value'],
+      [label, 80]])
+
+    this.chartObject = new google.visualization.Gauge(
+      document.getElementById(this.element)
+    );
+
+    this.label = label;
+    this.element = element;
+  }
+
+  // Update guage chart with new data from a single point
+  updateGuageChart(value) {
+    this.data.setValue(0, 1, value);
     this.chartObject.draw(this.data, this.options); // update chart
   }
 }
