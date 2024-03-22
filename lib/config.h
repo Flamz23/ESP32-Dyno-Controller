@@ -6,4 +6,5 @@
 #define PIN_IND_PICKUP_SENSOR 5
 #define PIN_SERVO_PWM 7
 
+#define TRIGGER_WHEEL_DIV 8.0
 #endif

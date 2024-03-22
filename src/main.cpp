@@ -1,72 +1,53 @@
 #include <Arduino.h>
-
-
-/****************** RPM Sensor ********************/
-float pulsePeriodMs = 0;
-float pulseRPM = 0;
-volatile unsigned long previousMillis = 0;
-volatile unsigned long pulseDuration = 0;
-volatile boolean fallingEdgeDetected = false;
-/****************** RPM Sensor ********************/
+#include "bme280.h"
+#include "stingray.h"
+#include "rpmsensor.h"
+#include "pickup.h"
+#include "../lib/config.h"
 
 // Print values to serial monitor
 void printValues() {
-  Serial.print("temp:");
-  Serial.print(bme.readTemperature()); // *C
-  Serial.print("pressure:");
-  Serial.print(bme.readPressure() / 100.0F); // hPa
 
-  Serial.print("humidity:");
-  Serial.print(bme.readHumidity()); // %
+  Serial.print("<");
+  Serial.print(getBME280Temperature());
 
-  Serial.print(", PDuration:");
-  Serial.print(pulseDuration);
+  Serial.print(",");
+  Serial.print(getBME280Humidity());
 
-  Serial.print(", PPeriod:");
-  Serial.print(pulsePeriodMs);
+  Serial.print(",");
+  Serial.print(getBME280Pressure());
 
-  Serial.print(", rpm:");
-  Serial.println(pulseRPM);
+  Serial.print(",");
+  Serial.print(getFlywheelRPM());
 }
 
-// Update period and RPM variables
-void fallInterrupt() {
-  unsigned long currentMillis = micros(); // Use micros() for microsecond precision
-  if (previousMillis != 0) {
-    pulseDuration = currentMillis - previousMillis;
-    fallingEdgeDetected = true;
+unsigned long previousMillis = 0;
+int angle = 0;
+int step = 1;
+int SWEEP_INTERVAL = 15;
+
+void sweepServo() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= SWEEP_INTERVAL) {
+    previousMillis = currentMillis;
+    angle += step;
+    if (angle >= 180 || angle <= 0) {
+      step = -step;
+    }
+    setServoAngle(angle);
   }
-  previousMillis = currentMillis;
-  pulsePeriodMs = pulseDuration / 1000.0; // Convert microseconds to milliseconds
-  pulseRPM = (1.0 /((pulsePeriodMs / 1000.0) * 8.0)) * 60.0; // 8div; convert to seconds, freq then per minutes
 }
 
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
-  /****************** BME280 ********************/
-  bool result;
-  result = bme.begin();
-  if (!result)
-  {
-    Serial.println("Init Fail,Please Check your address or the wire you connected!!!");
-    while (1)
-      ;
-  }
-  Serial.println("BME Init Success");
-  delayTime = 20;
-  /****************** BME280 ********************/
-
-  /****************** RPM Sensor ********************/
-  pinMode(RPM_SENSOR_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_PIN), fallInterrupt, FALLING);
-  /****************** RPM Sensor ********************/
+  initializeBME280();
+  initializeServo();
+  initializeRPMSensor();
 }
 
-void loop()
-{
+void loop() {
   printValues();
-  delay(delayTime);
+  sweepServo();
+  delay(20);
 }
