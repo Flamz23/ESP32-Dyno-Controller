@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "../config.h"
+#include "rpmsensor.h"
 
 float pulsePeriodMs = 0;
 float fullPeriod = 0;

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "../config.h"
+#include "pickup.h"
 
 float pulsePeriodS = 0;
 float pulseFrequencyHz = 0;

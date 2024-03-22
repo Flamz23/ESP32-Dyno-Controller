@@ -21,25 +21,23 @@ void printValues() {
   Serial.print(getFlywheelRPM());
 }
 
-unsigned long previousMillis = 0;
-int angle = 0;
-int step = 1;
-int SWEEP_INTERVAL = 15;
+int pos = 0;
+int direction = 1;
 
 void sweepServo() {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= SWEEP_INTERVAL) {
-    previousMillis = currentMillis;
-    angle += step;
-    if (angle >= 180 || angle <= 0) {
-      step = -step;
-    }
-    setServoAngle(angle);
+  setServoAngle(pos);
+  if (pos <= 0 || pos >= 180) {
+    direction = -direction;
   }
+  pos += direction;
 }
 
 void setup() {
   Serial.begin(115200);
+  while (!Serial) {
+      delay(10);
+    }
+    Serial.println("Serial test");
 
   initializeBME280();
   initializeServo();
