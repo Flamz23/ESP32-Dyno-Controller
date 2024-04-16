@@ -3,9 +3,9 @@
 #include "pickup.h"
 
 float pulsePeriodS = 0;
-float pulseFrequencyHz = 0;
-volatile unsigned long previousMicros = 0;
-volatile unsigned long elapsedTime = 0;
+float pulseFrequencyHzB = 0;
+volatile unsigned long previousMicrosB = 0;
+volatile unsigned long elapsedTimeB = 0;
 
 // Interrupt service routine
 void fallInterruptB() {
@@ -13,17 +13,17 @@ void fallInterruptB() {
   unsigned long currentMicros = micros();
 
   // If previousMillis is not 0, calculate elapsed time
-  if (previousMicros != 0)
+  if (previousMicrosB != 0)
   {
-      elapsedTime = currentMicros - previousMicros;
+      elapsedTimeB = currentMicros - previousMicrosB;
   }
-  previousMicros = currentMicros;
+  previousMicrosB = currentMicros;
 
   // Convert microseconds to seconds
-  pulsePeriodS = (elapsedTime / 1000.0) / 1000.0;
+  pulsePeriodS = elapsedTimeB * 0.000001;
 
   // Calculate frequency in Hz (1/period in seconds)
-  pulseFrequencyHz = 1.0 / pulsePeriodS;
+  pulseFrequencyHzB = 1.0 / pulsePeriodS;
 }
 
 void initializeInductivePickup()
@@ -38,7 +38,7 @@ void initializeInductivePickup()
 float getInductivePickupRPM()
 {
   // Calculate RPM from frequency
-  float pulseRPM = pulseFrequencyHz * 60.0;
+  float pulseRPM = (pulseFrequencyHzB / 4) * 60.0;
 
   // Return RPM
   return pulseRPM;

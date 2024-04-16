@@ -19,6 +19,9 @@ void printValues() {
 
   Serial.print(",");
   Serial.print(getFlywheelRPM());
+
+  Serial.print(",");
+  Serial.print(getInductivePickupRPM());
 }
 
 int pos = 0;
@@ -42,6 +45,7 @@ void setup() {
   initializeBME280();
   initializeServo();
   initializeRPMSensor();
+  initializeInductivePickup();
 }
 
 void loop() {
